@@ -8,8 +8,9 @@ interface iNewsItem {
 
 export const NewsItem:FC<iNewsItem> = ({news,index}) => {
     return (
+          // ddff
 
-          <h2>{index+1}) by:{news.by}, title:{news.title}</h2>
+          <h2>{index}) by:{news.by}, title:{news.title}</h2>
 
     );
 };
