@@ -1,11 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { iNews, iNewsTop, iNewslist } from "./types.ts";
+import {iNews, iNewsTop, iNewslist, iComment} from "./types.ts";
 import { RootState } from "./store.ts";
 
 // Начальное состояние
 const initialState: iNewslist = {
     newsArray: [],
+
     isLoading: false,
+
+    isLoadingTopNews: false,
+    isLoadingNewsDetails: false,
     error: null,
 };
 
@@ -41,7 +45,7 @@ export const detail = createAsyncThunk<void, void>(
         try {
 
             // Сначала получаем список ID топ новостей
-            const topNewsIDs = (await dispatch(fetchTopNewsID()).unwrap()).slice(0,100);
+            const topNewsIDs = (await dispatch(fetchTopNewsID()).unwrap()).slice(0,3);
 
             // Загружаем подробную информацию по каждому ID
             const newsDetails = await Promise.all(
@@ -57,6 +61,21 @@ export const detail = createAsyncThunk<void, void>(
 );
 
 
+
+// Асинхронное действие для получения подробной информации о конкретной новости
+export const fetchCommentsDetails = createAsyncThunk<iComment, number>(
+    'news/fetchNewsDetails',
+    // , number - параметр
+    async (id) => {
+        const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch news details for ID ${id}`);
+        }
+        return await response.json();
+    }
+);
+
+
 const newsSlice = createSlice({
     name: 'news',
     initialState,
@@ -64,28 +83,69 @@ const newsSlice = createSlice({
         // Редьюсер для сохранения данных новостей
         setNewsData: (state, action) => {
             state.newsArray = action.payload;
-            state.isLoading = false;
+            // state.isLoading = false;
         },
     },
+    // extraReducers: (builder) => {
+    //     // Обработка загрузки списка топ новостей
+    //     builder
+    //         // .addCase(fetchTopNewsID.pending, (state) => {state.isLoading = true;})
+    //         // .addCase(fetchTopNewsID.fulfilled, (state) => {state.isLoading = false;})
+    //         .addCase(fetchTopNewsID.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+    //
+    //     // Обработка загрузки подробной информации о новости
+    //     builder
+    //         // .addCase(fetchNewsDetails.pending, (state) => {state.isLoading = true;})
+    //         // .addCase(fetchNewsDetails.fulfilled, (state) => {state.isLoading = false;})
+    //         .addCase(fetchNewsDetails.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+    //
+    //     // Обработка действия detail
+    //     builder
+    //         .addCase(detail.pending, (state) => {state.isLoading = true;})
+    //         .addCase(detail.fulfilled, (state) => {state.isLoading = false;})
+    //         .addCase(detail.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+    // }
+
     extraReducers: (builder) => {
-        // Обработка загрузки списка топ новостей
         builder
-            .addCase(fetchTopNewsID.pending, (state) => {state.isLoading = true;})
-            .addCase(fetchTopNewsID.fulfilled, (state) => {state.isLoading = false;})
-            .addCase(fetchTopNewsID.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+            .addCase(fetchTopNewsID.pending, (state) => {
+                state.isLoadingTopNews = true;
+                state.error = null; // Сброс ошибки при начале загрузки
+            })
+            .addCase(fetchTopNewsID.fulfilled, (state) => {
+                state.isLoadingTopNews = false;
+            })
+            .addCase(fetchTopNewsID.rejected, (state, action) => {
+                state.isLoadingTopNews = false;
+                state.error = action.error.message || 'Unknown error';
+            });
 
-        // Обработка загрузки подробной информации о новости
         builder
-            .addCase(fetchNewsDetails.pending, (state) => {state.isLoading = true;})
-            .addCase(fetchNewsDetails.fulfilled, (state) => {state.isLoading = false;})
-            .addCase(fetchNewsDetails.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+            .addCase(fetchNewsDetails.pending, (state) => {
+                state.isLoadingNewsDetails = true;
+                state.error = null; // Сброс ошибки при начале загрузки
+            })
+            .addCase(fetchNewsDetails.fulfilled, (state) => {
+                state.isLoadingNewsDetails = false;
+            })
+            .addCase(fetchNewsDetails.rejected, (state, action) => {
+                state.isLoadingNewsDetails = false;
+                state.error = action.error.message || 'Unknown error';
+            });
 
-        // Обработка действия detail
         builder
-            .addCase(detail.pending, (state) => {state.isLoading = true;})
-            .addCase(detail.fulfilled, (state) => {state.isLoading = false;})
-            .addCase(detail.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
+            .addCase(detail.pending, (state) => {
+                state.isLoading = true; // Можно использовать общий флаг, если это необходимо
+            })
+            .addCase(detail.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(detail.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || 'Unknown error';
+            });
     }
+
 });
 
 const { setNewsData } = newsSlice.actions;

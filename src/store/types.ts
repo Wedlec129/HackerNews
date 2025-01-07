@@ -22,6 +22,24 @@ export interface iNews {
 export interface iNewslist {
 
     newsArray: iNews[];
+
     isLoading: boolean;
+
+    isLoadingTopNews: boolean,
+    isLoadingNewsDetails: boolean,
     error: string | null;
+}
+
+
+
+
+
+export interface iComment {
+    by: string;
+    id: number;
+    kids: number[];
+    parent: number;
+    time: number;
+    text: string;
+    type: string;
 }
