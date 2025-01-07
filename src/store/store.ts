@@ -2,10 +2,12 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import newsSlice from "./newsSlice.ts";
+// import commentsSlice from "./commentsSlice.ts";
 
 export const store = configureStore({
     reducer: {
-        news: newsSlice, // Добавляем редюсер для posts
+        news: newsSlice, // Добавляем редюсер для news
+
     },
 });
 
