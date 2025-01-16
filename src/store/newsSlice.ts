@@ -45,7 +45,7 @@ export const detail = createAsyncThunk<void, void>(
         try {
 
             // Сначала получаем список ID топ новостей
-            const topNewsIDs = (await dispatch(fetchTopNewsID()).unwrap()).slice(0,3);
+            const topNewsIDs = (await dispatch(fetchTopNewsID()).unwrap()).slice(0,15)
 
             // Загружаем подробную информацию по каждому ID
             const newsDetails = await Promise.all(
@@ -86,25 +86,7 @@ const newsSlice = createSlice({
             // state.isLoading = false;
         },
     },
-    // extraReducers: (builder) => {
-    //     // Обработка загрузки списка топ новостей
-    //     builder
-    //         // .addCase(fetchTopNewsID.pending, (state) => {state.isLoading = true;})
-    //         // .addCase(fetchTopNewsID.fulfilled, (state) => {state.isLoading = false;})
-    //         .addCase(fetchTopNewsID.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
-    //
-    //     // Обработка загрузки подробной информации о новости
-    //     builder
-    //         // .addCase(fetchNewsDetails.pending, (state) => {state.isLoading = true;})
-    //         // .addCase(fetchNewsDetails.fulfilled, (state) => {state.isLoading = false;})
-    //         .addCase(fetchNewsDetails.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
-    //
-    //     // Обработка действия detail
-    //     builder
-    //         .addCase(detail.pending, (state) => {state.isLoading = true;})
-    //         .addCase(detail.fulfilled, (state) => {state.isLoading = false;})
-    //         .addCase(detail.rejected, (state, action) => {state.error = action.error.message || 'Unknown error';state.isLoading = false;});
-    // }
+
 
     extraReducers: (builder) => {
         builder
@@ -135,7 +117,7 @@ const newsSlice = createSlice({
 
         builder
             .addCase(detail.pending, (state) => {
-                state.isLoading = true; // Можно использовать общий флаг, если это необходимо
+                state.isLoading = true; // общий флаг
             })
             .addCase(detail.fulfilled, (state) => {
                 state.isLoading = false;
