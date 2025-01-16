@@ -51,3 +51,31 @@
 
 Открыть браузер [http://localhost:5173](http://localhost:5173)
 
+
+
+## Запушенный сайт
+# /news
+Список последних 15 новостей, который обновляется раз в 1 минуту
+<p align="center">
+      <img src="https://github.com/Wedlec129/HackerNews/blob/main/public/foto/1.png" width="726">
+</p>
+
+# /news/:id
+Страница с подробной информацией о новости и комантарии к ней
+<p align="center">
+      <img src="https://github.com/Wedlec129/HackerNews/blob/main/public/foto/2.png" width="726">
+</p>
+
+## Пример API
+[Получение списка последних новостей](https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty) 
+<p align="left">
+      <img src="https://github.com/Wedlec129/HackerNews/blob/main/public/foto/3.png" width="726">
+</p>
+
+[Получение подробной информации о новости](https://hacker-news.firebaseio.com/v0/item/42725385.json?print=pretty)
+<p align="left">
+      <img src="https://github.com/Wedlec129/HackerNews/blob/main/public/foto/1.png" width="726">
+</p>
+
+
+
