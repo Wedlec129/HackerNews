@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import NewsPage from "../pages/NewsPage.tsx";
 import {NewsDetailPage} from "../pages/NewsDetailPage.tsx";
 
@@ -7,7 +7,7 @@ const publicRoutes = [
     {path:'/about' , element: <h1>about</h1> },
     {path: '/news', element: <NewsPage/>},
     {path: '/news/:id', element: <NewsDetailPage/>},
-
+    { path: '*', element: <Navigate to="/news" replace /> },
 ]
 
 const AppRouter = () => {
